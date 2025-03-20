@@ -8,7 +8,7 @@ import AnimalModel from "../models/animal.schema.js";
 import PlanModel from "../models/plan.schema.js";
 import ComentarioModel from "../models/comentarios.schema.js";
 import { usuarios } from "../mocks/usuarios.mock.js";
-import { productos } from "../mocks/productos.mock.js";
+import { ropaData } from "../mocks/productos.mock.js";
 import { animales } from "../mocks/animales.mock.js";
 import { planes } from "../mocks/planes.mock.js";
 import { comentarios } from "../mocks/comentarios.mock.js";
@@ -21,7 +21,7 @@ export function poblarDB() {
       const productosExistentes = await ProductModel.find();
 
       if (productosExistentes.length === 0) {
-        for (const producto of productos) {
+        for (const producto of ropaData) {
           const resultado = await postProductoService(producto);
           console.log(resultado.mensaje);
         }
@@ -59,7 +59,7 @@ export function poblarDB() {
     }
   };
 
-  const inicializarAnimales = async () => {
+  /* const inicializarAnimales = async () => {
     try {
       const planesExistentes = await PlanModel.find();
 
@@ -106,7 +106,7 @@ export function poblarDB() {
     } catch (error) {
       console.error("Error al inicializar animales y planes:", error);
     }
-  };
+  }; */
 
   const inicializarComentarios = async () => {
     try {
@@ -128,6 +128,6 @@ export function poblarDB() {
 
   inicializarUsuarios();
   inicializarProductos();
-  inicializarAnimales();
+  //inicializarAnimales();
   inicializarComentarios();
 }
