@@ -13,7 +13,7 @@ const CartSchema = new mongoose.Schema({
       ref: 'Producto',
     }
   ],
-});
+}, {timestamps: true});
 
 const CartModel = model('cart', CartSchema);
 

@@ -8,7 +8,7 @@ const PlanSchema = new Schema({
   descripcion: { type: String, required: true },
   precio: { type: Number, required: true },
   imagenUrl: { type: String },
-});
+}, {timestamps: true});
 
 const Plan = model("Plan", PlanSchema);
 

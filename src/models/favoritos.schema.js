@@ -13,7 +13,7 @@ const FavSchema = new mongoose.Schema({
       ref: 'Producto',
     }
   ],
-});
+}, {timestamps: true});
 
 const FavModel = model('fav', FavSchema);
 

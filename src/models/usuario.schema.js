@@ -65,9 +65,9 @@ const PreferenciasSchema = new Schema({
 });
 
 const UsuarioSchema = new Schema({
-  id: { type: Number, unique: true, required: true, unique: true },
+  id: { type: Number, unique: true, required: true },
   nombreUsuario: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true, unique: true },
+  email: { type: String, required: true, unique: true },
   contrasenia: { type: String, required: true, select: false },
   login: { type: Boolean, default: false },
   bloqueado: { type: Boolean, default: false },
@@ -75,9 +75,14 @@ const UsuarioSchema = new Schema({
   verificacionEmail: { type: Boolean, default: false },
   nombre: { type: String },
   apellido: { type: String },
-  fechaNacimiento: { type: Date },
+  fechaNacimiento: {
+    type: Date, validate: {
+      validator: function (v) { return v < new Date(); },
+      message: "La fecha de nacimiento no puede estar en el futuro."
+    }
+  },
   direccion: { type: DireccionSchema },
-  telefono: { type: String },
+  telefono: { type: String, match: [/^\+?[0-9]{7,15}$/, "Número de teléfono inválido"] },
   fotoPerfil: { type: String },
   fotosPerfil: { type: [String], default: [] },
   rol: { type: String, enum: ROLES, required: true, default: "cliente" },
@@ -94,13 +99,13 @@ const UsuarioSchema = new Schema({
     enum: ESTADOS_SUSCRIPCION,
     default: "Gratis",
   },
-  notificaciones: { type: NotificacionesSchema, default: {} },
-  autenticacionDosFactores: { type: Boolean },
+  notificaciones: { type: NotificacionesSchema, default: { email: false, sms: false } },
+  autenticacionDosFactores: { type: Boolean, default: false },
   region: { type: String, enum: REGIONES },
   idCarrito: { type: mongoose.Schema.Types.ObjectId, ref: "cart" },
   idFavoritos: { type: mongoose.Schema.Types.ObjectId, ref: "fav" },
   mascotas: [{ type: mongoose.Schema.Types.ObjectId, ref: "Animal" }],
-});
+}, { timestamps: true });
 
 const Usuario = model("Usuario", UsuarioSchema);
 

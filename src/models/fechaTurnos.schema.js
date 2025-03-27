@@ -30,7 +30,7 @@ const turnoSchema = new mongoose.Schema({
   descripcion: {
     type: String,
   }
-});
+}, {timestamps: true});
 
 const fechaTurnoSchema = new mongoose.Schema({
   fecha: {
@@ -51,7 +51,7 @@ const fechaTurnoSchema = new mongoose.Schema({
   actualizadoEn: {
     type: Date
   }
-});
+}, {timestamps: true});
 
 const FechaTurnoModel = mongoose.model('FechaTurno', fechaTurnoSchema);
 

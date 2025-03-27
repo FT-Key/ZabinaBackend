@@ -15,7 +15,7 @@ const comentarioSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+}, {timestamps: true});
 
 const Comentario = mongoose.model('Comentario', comentarioSchema);
 

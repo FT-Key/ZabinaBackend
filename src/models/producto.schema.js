@@ -38,7 +38,7 @@ const productoSchema = new Schema({
       message: 'Los colores son obligatorios para productos de tipo ropa.',
     },
   },
-});
+}, {timestamps: true});
 
 const Producto = _model('Producto', productoSchema);
 
