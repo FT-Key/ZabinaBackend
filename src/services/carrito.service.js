@@ -1,9 +1,7 @@
 import CartModel from "../models/carrito.schema.js";
-import FavModel from "../models/favoritos.schema.js";
 import ProductModel from "../models/producto.schema.js";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 
-// Carrito
 
 export const addProductToCartService = async (idUsuario, idProducto) => {
   let cart = await CartModel.findOne({ idUsuario });
@@ -83,44 +81,4 @@ export const buyProductsMPService = async (productos, returnUrl) => {
     url: result.id,
     statusCode: 200,
   };
-};
-
-// Favoritos
-
-export const addProductToFavService = async (idUsuario, idProducto) => {
-  let fav = await FavModel.findOne({ idUsuario });
-
-  if (!fav) {
-    fav = new FavModel({ idUsuario, productos: [idProducto] });
-  } else {
-    const productoExiste = fav.productos.some(prod => prod.toString() === idProducto.toString());
-
-    if (!productoExiste) {
-      fav.productos.push(idProducto);
-    }
-  }
-
-  await fav.save();
-  return fav.populate("productos");
-};
-
-export const removeProductFromFavService = async (idUsuario, idProducto) => {
-  const fav = await FavModel.findOne({ idUsuario });
-
-  if (!fav) throw new Error("Lista de favoritos no encontrada");
-
-  fav.productos = fav.productos.filter(
-    (product) => product.toString() !== idProducto
-  );
-
-  await fav.save();
-  return fav.populate("productos");
-};
-
-export const getFavService = async (idUsuario) => {
-  const fav = await FavModel.findOne({ idUsuario }).populate("productos");
-
-  if (!fav) throw new Error("Lista de favoritos no encontrada");
-
-  return fav;
 };
