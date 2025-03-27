@@ -7,18 +7,18 @@ import dynamicFilterMiddleware from '../middlewares/filter.js';
 
 const router = express.Router();
 
-router.get('/obtener', authTokenAndRole(['cliente', 'admin']), paginationMiddleware, dynamicFilterMiddleware(FechaTurnoModel), obtenerTurnosController);
+router.get('/', authTokenAndRole(['cliente', 'admin']), paginationMiddleware, dynamicFilterMiddleware(FechaTurnoModel), obtenerTurnosController);
 
-router.get('/obtener/:fecha', authTokenAndRole(['cliente', 'admin']), obtenerTurnoController);
+router.get('/:fecha', authTokenAndRole(['cliente', 'admin']), obtenerTurnoController);
 
 router.get('/listaTurnos', authTokenAndRole(['cliente', 'admin']), listaTurnosController);
 
-router.post('/solicitarTurno', authTokenAndRole(['cliente', 'admin']), solicitarTurnoController);
+router.post('/', authTokenAndRole(['cliente', 'admin']), solicitarTurnoController);
 
 router.post('/crearTurnosSemanales', authTokenAndRole(['admin']), crearTurnosSemanalesController);
 
 router.put('/cancelarTurno', authTokenAndRole(['cliente', 'admin']), cancelarTurnoController);
 
-router.put('/modificarTurno/:turnoId', authTokenAndRole(['cliente', 'admin']), modificarTurnoController);
+router.put('/:turnoId', authTokenAndRole(['cliente', 'admin']), modificarTurnoController);
 
 export default router;

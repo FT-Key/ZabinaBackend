@@ -9,7 +9,6 @@ import {
 } from '../controllers/planes.controllers.js';
 import { authTokenAndRole } from '../middlewares/auth.js';
 import { paginationMiddleware } from '../utils/pagination.js';
-import PlanModel from '../models/plan.schema.js';
 const router = Router();
 
 /* GET */
