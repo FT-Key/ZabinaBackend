@@ -1,4 +1,4 @@
-import { enviarCorreo } from '../utils/mailer.js';
+import { enviarCorreo } from '../utils/email.utils.js';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 export const postContactoService = async ({ nombre, email, telefono, asunto, mensaje }) => {

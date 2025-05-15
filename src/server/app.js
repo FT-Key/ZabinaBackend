@@ -19,6 +19,7 @@ import animalsRouter from "../routes/animales.routes.js";
 import plansRouter from "../routes/planes.routes.js";
 import contactRouter from "../routes/contacto.routes.js";
 import comentariosRouter from "../routes/comentarios.routes.js";
+import recuperarContraseniaRouter from "../routes/recuperarContrasenia.route.js";
 
 class Server {
   constructor(puerto) {
@@ -61,6 +62,7 @@ class Server {
     this.app.use("/planes", plansRouter);
     this.app.use("/contacto", contactRouter);
     this.app.use("/comentarios", comentariosRouter);
+    this.app.use("/recuperarContrasenia", recuperarContraseniaRouter);
     this.app.get("/api/hello", (req, res) => {
       res.json({ message: "Hello from the server!" });
     });

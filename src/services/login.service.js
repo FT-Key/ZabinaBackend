@@ -46,7 +46,6 @@ export async function loginService(userData) {
       msg: "Inicio de sesión exitoso!",
     };
   } catch (error) {
-    console.error("Error en loginService:", error);
     return { statusCode: 500, msg: "Error en el servidor" };
   }
 }
