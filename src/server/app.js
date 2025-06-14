@@ -15,8 +15,6 @@ import registerRouter from "../routes/register.routes.js";
 import carritoRouter from "../routes/carrito.routes.js";
 import favoritosRouter from "../routes/favoritos.routes.js";  
 import turnosRouter from "../routes/turnos.routes.js";
-import animalsRouter from "../routes/animales.routes.js";
-import plansRouter from "../routes/planes.routes.js";
 import contactRouter from "../routes/contacto.routes.js";
 import comentariosRouter from "../routes/comentarios.routes.js";
 import recuperarContraseniaRouter from "../routes/recuperarContrasenia.route.js";
@@ -58,8 +56,6 @@ class Server {
     this.app.use("/carrito", carritoRouter);
     this.app.use("/favoritos", favoritosRouter);  
     this.app.use("/turnos", turnosRouter);
-    this.app.use("/animales", animalsRouter);
-    this.app.use("/planes", plansRouter);
     this.app.use("/contacto", contactRouter);
     this.app.use("/comentarios", comentariosRouter);
     this.app.use("/recuperarContrasenia", recuperarContraseniaRouter);

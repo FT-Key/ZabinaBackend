@@ -1,16 +1,8 @@
 import mongoose from "mongoose";
 import { Schema, model } from "mongoose";
 
-const IDIOMAS = ["Español", "Inglés", "Francés", "Alemán", "Italiano"];
+const IDIOMAS = ["Español", "Inglés", "Francés", "Alemán", "Italiano", "Ruso"];
 const TEMAS = ["Claro", "Oscuro"];
-const PREGUNTAS_SEGURIDAD = [
-  "¿Cuál es el nombre de tu mascota?",
-  "¿Cuál es el nombre de tu primera escuela?",
-  "¿Cuál es tu comida favorita?",
-  "¿Cuál es tu color favorito?",
-  "¿Cuál es tu libro favorito?",
-];
-const REGIONES = ["en-US", "es-ES", "fr-FR", "de-DE", "it-IT"];
 const ROLES = ["admin", "cliente"];
 const PAISES = [
   "Argentina",
@@ -33,8 +25,19 @@ const PAISES = [
   "Sudáfrica",
   "Uruguay",
   "Venezuela",
+  "Otro"
 ];
-const ESTADOS_SUSCRIPCION = ["Premium", "Gratis"];
+const REDES_SOCIALES = [
+  "Twitter",
+  "LinkedIn",
+  "Instagram",
+  "Facebook",
+  "GitHub",
+  "YouTube",
+  "TikTok",
+  "Reddit",
+  "Otra"
+];
 
 const DireccionSchema = new Schema({
   calle: { type: String },
@@ -44,14 +47,9 @@ const DireccionSchema = new Schema({
   pais: { type: String, enum: PAISES },
 });
 
-const PreguntaSeguridadSchema = new Schema({
-  pregunta: { type: String, enum: PREGUNTAS_SEGURIDAD },
-  respuesta: { type: String },
-});
-
 const EnlacesRedesSocialesSchema = new Schema({
-  twitter: { type: String },
-  linkedin: { type: String },
+  nombreRed: { type: String, enum: REDES_SOCIALES, required: true },
+  enlace: { type: String, required: true }
 });
 
 const NotificacionesSchema = new Schema({
@@ -65,11 +63,9 @@ const PreferenciasSchema = new Schema({
 });
 
 const UsuarioSchema = new Schema({
-  id: { type: Number, unique: true, required: true },
   nombreUsuario: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   contrasenia: { type: String, required: true, select: false },
-  login: { type: Boolean, default: false },
   bloqueado: { type: Boolean, default: false },
   tipoRegistro: { type: String, enum: ["normal", "google"], default: "normal" },
   verificacionEmail: { type: Boolean, default: false },
@@ -84,27 +80,13 @@ const UsuarioSchema = new Schema({
   direccion: { type: DireccionSchema },
   telefono: { type: String, match: [/^\+?[0-9]{7,15}$/, "Número de teléfono inválido"] },
   fotoPerfil: { type: String },
-  fotosPerfil: { type: [String], default: [] },
   rol: { type: String, enum: ROLES, required: true, default: "cliente" },
-  ultimoIngreso: { type: Date },
-  creadoEn: { type: Date, default: Date.now },
-  actualizadoEn: { type: Date },
   estaActivo: { type: Boolean, default: true },
   preferencias: { type: PreferenciasSchema, default: {} },
-  preguntaSeguridad: { type: PreguntaSeguridadSchema },
-  biografia: { type: String },
-  enlacesRedesSociales: { type: EnlacesRedesSocialesSchema },
-  estadoSuscripcion: {
-    type: String,
-    enum: ESTADOS_SUSCRIPCION,
-    default: "Gratis",
-  },
+  enlacesRedesSociales: { type: [EnlacesRedesSocialesSchema], default: [] },
   notificaciones: { type: NotificacionesSchema, default: { email: false, sms: false } },
-  autenticacionDosFactores: { type: Boolean, default: false },
-  region: { type: String, enum: REGIONES },
   idCarrito: { type: mongoose.Schema.Types.ObjectId, ref: "cart" },
   idFavoritos: { type: mongoose.Schema.Types.ObjectId, ref: "fav" },
-  mascotas: [{ type: mongoose.Schema.Types.ObjectId, ref: "Animal" }],
 }, { timestamps: true });
 
 const Usuario = model("Usuario", UsuarioSchema);

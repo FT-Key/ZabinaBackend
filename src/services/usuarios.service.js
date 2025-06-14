@@ -1,30 +1,25 @@
 import UserModel from "../models/usuario.schema.js";
 import CartModel from "../models/carrito.schema.js";
 import FavModel from "../models/favoritos.schema.js";
-import AnimalModel from "../models/animal.schema.js";
 import cloudinary from "../helpers/cloudinary.config.js";
 
 export const getUsuariosService = async (pagination = null, filters = {}) => {
-  let usuarios;
-  let totalUsuarios = await UserModel.countDocuments(filters);
+  // Total de usuarios que cumplen los filtros
+  const totalUsuarios = await UserModel.countDocuments(filters);
 
+  // Construimos la consulta base
+  let query = UserModel.find(filters);
+
+  // Si hay paginación, la aplicamos
   if (pagination) {
     const { skip, limit } = pagination;
-    usuarios = await UserModel.find(filters)
-      .skip(skip)
-      .limit(limit)
-      .populate({
-        path: 'mascotas',
-        model: 'Animal',
-      });
-  } else {
-    usuarios = await UserModel.find(filters)
-      .populate({
-        path: 'mascotas',
-        model: 'Animal',
-      });
+    query = query.skip(skip).limit(limit);
   }
 
+  // Ejecutamos la consulta; ya no hay populate()
+  const usuarios = await query.exec();
+
+  // Devolvemos la respuesta estándar
   return {
     usuarios,
     totalUsuarios,
@@ -32,13 +27,10 @@ export const getUsuariosService = async (pagination = null, filters = {}) => {
   };
 };
 
+
 export const getUsuarioService = async (idUsuario) => {
   try {
-    const usuario = await UserModel.findOne({ _id: idUsuario })
-      .populate({
-        path: 'mascotas',
-        model: 'Animal',
-      });
+    const usuario = await UserModel.findOne({ _id: idUsuario });
 
     if (usuario) {
       return {
@@ -84,51 +76,33 @@ export const postUsuarioService = async (nuevoUsuarioData) => {
 };
 
 export const putUsuarioService = async (idUsuario, usuarioData) => {
+  console.log("Entra aqui 5 - 1");
 
-  const usuario = await UserModel.findById(idUsuario).populate('mascotas');
+  // Si tiene fotoPerfil nueva, asegurate de mantener el array actualizado
+  const usuario = await UserModel.findById(idUsuario);
+
+  if (!usuario) {
+    return {
+      mensaje: "Usuario no encontrado",
+      statusCode: 404,
+    };
+  }
 
   if (usuarioData.fotoPerfil) {
     if (!usuario.fotosPerfil.includes(usuarioData.fotoPerfil)) {
-      usuario.fotosPerfil.push(usuarioData.fotoPerfil);
+      usuarioData.fotosPerfil = [...usuario.fotosPerfil, usuarioData.fotoPerfil];
     }
   }
 
-  if (usuarioData.mascotas !== undefined && usuarioData.mascotas !== null) {
+  console.log("Entra aqui 5 - 6", usuarioData);
 
-    const mascotasDB = usuario.mascotas.map(m => m._id.toString());
+  const usuarioActualizado = await UserModel.findByIdAndUpdate(
+    idUsuario,
+    { $set: usuarioData },
+    { new: true, runValidators: true }
+  );
 
-    const mascotasActualizadas = usuarioData.mascotas;
-
-    const mascotasEliminadas = mascotasDB.filter(idMascota => !mascotasActualizadas.some(m => m._id && m._id.toString() === idMascota));
-
-    if (mascotasEliminadas.length > 0) {
-      for (const idMascota of mascotasEliminadas) {
-        usuario.mascotas = usuario.mascotas.filter(mascota => mascota._id.toString() !== idMascota);
-        await AnimalModel.findByIdAndDelete(idMascota);
-      }
-    }
-
-    for (let mascotaFrontend of mascotasActualizadas) {
-      if (!mascotaFrontend._id) {
-        const nuevaMascota = new AnimalModel({
-          duenio: usuario._id,
-          tipo: mascotaFrontend.tipo,
-          raza: mascotaFrontend.raza,
-          nombre: mascotaFrontend.nombre,
-          edad: mascotaFrontend.edad,
-          estado: "Mascota",
-          fotoUrl: "https://via.placeholder.com/150"
-        });
-        const mascotaGuardada = await nuevaMascota.save();
-        usuario.mascotas.push(mascotaGuardada._id.toString());
-      }
-    }
-  }
-
-  const { mascotas, ...restoDeUsuarioData } = usuarioData;
-  Object.assign(usuario, restoDeUsuarioData);
-
-  const usuarioActualizado = await usuario.save();
+  console.log("Entra aqui 5 - 7");
 
   return {
     mensaje: "Usuario actualizado",

@@ -1,6 +1,7 @@
 import { closeLoginService, googleLoginService, loginService } from "../services/login.service.js";
 
 export const loginController = async (req, res) => {
+  console.log("Entra aqui 1")
   try {
     const usuarioData = req.body;
 
@@ -11,6 +12,7 @@ export const loginController = async (req, res) => {
     };
 
     let result;
+  console.log("Entra aqui 2")
 
     if (usuarioData.userPass) {
       result = await loginService(transformedData);

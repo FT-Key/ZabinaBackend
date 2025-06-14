@@ -4,6 +4,8 @@ import { generateJwtToken, verifyPassword } from "../utils/login.utils.js";
 import UserModel from "../models/usuario.schema.js";
 
 export async function loginService(userData) {
+  console.log("Entra aqui 3")
+
   const { nombreDeUsuario, contraseniaDeUsuario, recordarme } = userData;
 
   try {
@@ -16,29 +18,37 @@ export async function loginService(userData) {
     if (usuarioEncontrado.bloqueado) {
       return { statusCode: 403, msg: "El usuario está bloqueado" };
     }
-
+    console.log("Entra aqui 4")
+    
     if (usuarioEncontrado.tipoRegistro !== "normal") {
       return { statusCode: 400, msg: "Error al iniciar sesión, tipo de registro inválido" };
     }
-
+    console.log("Entra aqui 4.1")
+    
     const contraseniaCoincide = await verifyPassword(contraseniaDeUsuario, usuarioEncontrado.contrasenia);
-
+    
+    console.log("Entra aqui 4.2")
     if (!contraseniaCoincide) {
       return { statusCode: 400, msg: "Contraseña incorrecta" };
     }
+    console.log("Entra aqui 4.3")
 
     const usuarioData = {
       estaActivo: true,
       ultimoIngreso: new Date(),
     };
+    console.log("Entra aqui 5", usuarioEncontrado._id, usuarioData)
 
     const actualizacion = await putUsuarioService(usuarioEncontrado._id, usuarioData);
+    console.log("Entra aqui 5.5")
 
     if (!actualizacion.usuario) {
       return { statusCode: 500, msg: "Error al actualizar el usuario" };
     }
+    console.log("Entra aqui 6")
 
     const token = generateJwtToken(usuarioEncontrado);
+    console.log("Entra aqui 7")
 
     return {
       statusCode: 200,
@@ -67,7 +77,6 @@ export async function googleLoginService(token) {
 
     const usuarioEncontrado = await UserModel.findOne({ email: userInfo.email })
       .select('+contrasenia')
-      .populate('mascotas');
 
     if (!usuarioEncontrado) {
       return { statusCode: 404, msg: "UsuarioEncontrado no encontrado" };
